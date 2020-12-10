@@ -1,6 +1,9 @@
+//require mongoose til at lave vores UserSchema
 const mongoose = require('mongoose');
 
-const UserSchema = new mongoose.Schema({
+//udfylder skemaet, hvor vi sætter hver attribut til required, dette skal altså udfyldes
+
+const UserSkema = new mongoose.Schema({
   name: {
     type: String,
     required: true
@@ -27,6 +30,12 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-const User = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', UserSkema);
 
 module.exports = User;
+
+
+
+
+
+

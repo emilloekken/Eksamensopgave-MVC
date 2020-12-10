@@ -21,7 +21,7 @@ router.get('/register', (req, res) => res.render('Register'));
 
 router.get('/profile', (req, res) => res.render('Profile', {deleteUser: deleteUser, email: req.session.email}))
 
-// Register handler, får submit af register profil i terminalen
+// Registrerings handler, får submit af register profil i terminalen, og efterfølgende kører den igennem if statements, for validation
 router.post('/register', (req, res) => {
     const { name, email, age, gender, preferredGender, password, password2 } = req.body;
     let errors = [];
@@ -82,7 +82,7 @@ if (errors.length > 0) {
 //vi får vores password i tekst som vi kan se, vi laver derfor hash password som er krypteret
         bcrypt.genSalt(10, (err, salt) => bcrypt.hash(newUser.password, salt, (err, hash) => {
             if(err) throw err;
-//set password fra plain tekst til hash 
+//sætter password fra plain tekst til hash 
             newUser.password = hash;
 //save vores nye user info
             newUser.save()
@@ -118,8 +118,7 @@ router.get('/logout', (req, res) => {
     res.redirect('/users/login');
   });
 
-// Delete User, url: https://www.positronx.io/build-secure-jwt-token-based-authentication-api-with-node/
-
+// endpoint til at slette en bruger, denne er forsøgt koblet op til min submit knap på profil-siden, dette lykkedes dog ikke 
 
 router.delete('/delete-user/:id', ((req, res, next) => {
     User.findByIdAndRemove(req.params.id, (error, data) => {
@@ -161,22 +160,5 @@ router.put("/update/:id", async (req, res) => {
       res.send(500);
     }
   });
-
-
-//endpoint til at slette en bruger
-/*
-router.delete('/:id', async (req, res) => {
-    try{
-        const user = await User.findByIdAndRemove({
-            _id: req.params.id
-        })
-    } catch (error) {
-        console.log(error);
-        return res.sendStatus(500)
-    }
-})
-*/
-
-
 
 module.exports = router;

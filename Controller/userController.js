@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-// bruger bcrypt til at inkrypterer password
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const User = require('../model/User');
@@ -14,24 +13,24 @@ const { update } = require('../model/User');
 //Login page
 router.get('/login', (req, res) => res.render('Login'));
 
-router.use(session({secret: "Shh, det en hemmelighed!"}));
+router.use(session({secret: "Dette er ekstremt hemmeligt!!"}));
 
 //Registerpage
 router.get('/register', (req, res) => res.render('Register'));
 
 router.get('/profile', (req, res) => res.render('Profile', {deleteUser: deleteUser, email: req.session.email}))
 
-// Registrerings handler, får submit af register profil i terminalen, og efterfølgende kører den igennem if statements, for validation
+// Registrering, får submit af register profil i terminalen, og efterfølgende kører den igennem if statements, for validation
 router.post('/register', (req, res) => {
     const { name, email, age, gender, preferredGender, password, password2 } = req.body;
     let errors = [];
 
-// check om felterne er udfyldte
+// checker om alle felterne er udfyldte
 if (!name || !email || !age || !gender || !preferredGender || !password || !password2) {
     errors.push({ msg: 'Please enter all fields' });
   }
 
-//Check passwords match, evt find på nogle selv istedet, ellers brug hans fra videoen ca 31:00
+// checker om de to passwords matcher
 if (password != password2) {
     errors.push({ msg: 'Passwords do not match' });
   }
@@ -79,15 +78,16 @@ if (errors.length > 0) {
                 preferredGender,
                 password
             });
+
 //vi får vores password i tekst som er læseligt, vi laver derfor hash password som er krypteret
         bcrypt.genSalt(10, (err, salt) => bcrypt.hash(newUser.password, salt, (err, hash) => {
             if(err) throw err;
+
 //sætter password fra plain tekst til hash 
             newUser.password = hash;
 //gemmer vores nye user information
             newUser.save()
             .then(user => {
-                req.flash('success_msg', 'du er nu registreret og kan tilgå hjemmesiden');
                 res.redirect('/users/login');
             })
             .catch(err => console.log(err));
@@ -107,14 +107,12 @@ router.post('/login', (req, res, next) => {
     passport.authenticate('local', {
         successRedirect: '/home',
         failureRedirect: '/users/login',
-        failureFlash: true
       })(req, res, next);
     });
 
 // Logout, redirecter dig tilbage til forsiden når du logger ud
 router.get('/logout', (req, res) => {
     req.logout();
-    req.flash('success_msg', 'Du er nu logget ud');
     res.redirect('/users/login');
   });
 

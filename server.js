@@ -1,7 +1,6 @@
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose')
-const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
 const bodyparser = require('body-parser')
@@ -40,16 +39,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-//connect flash 
-app.use(flash());
-
-//indsætter flash messages, pop up beskeder som viser sig, hvis arbejder på req,res. Den svarer på parametrene success eller error. 
-app.use((req, res, next) => {
-    res.locals.success_msg = req.flash('success_msg');
-    res.locals.error_msg = req.flash('error_msg');
-    res.locals.error = req.flash('error');
-    next();
-});
 
 //routes til loginController og userController
 app.use('/', require('./controller/loginController'));

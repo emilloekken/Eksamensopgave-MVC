@@ -3,8 +3,6 @@ const express = require('express');
 const router = express.Router();
 
 
-//sætter express til at fungere ved brug af app
-
 //Routes fra home side til de andre sider
 
 //route fra home til swipe, bruger render til at videresende et dokument der skal fremvises, her swipe.ejs

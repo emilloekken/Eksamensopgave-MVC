@@ -29,6 +29,8 @@ module.exports = function(passport) {
             .catch(err => console.log(err))
         })
     );
+
+    //user id bliver gemt i en session, så vi kan forblive logget ind, og ved hvilke id vi skal logge ud med senere hen 
     
     passport.serializeUser((user, done) => {
         done(null, user.id);

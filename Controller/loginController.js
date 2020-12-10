@@ -4,10 +4,7 @@ const router = express.Router();
 
 const { ensureAuthenticated } = require('../authentication/login');
 
-//dette er siden når man er kommet ind
-router.get('/', (req, res) => res.render('Velkommen til'));
-
-//home siden når man er kommet ind
+//Her bruger vi ensureAuthenticated, til at tjekke om brugeren er verificeret til at se home siden, hvis han er det, bliver han redirected derhen
 router.get('/home', ensureAuthenticated, (req, res) => 
 res.render('home', {
     name: req.user.name

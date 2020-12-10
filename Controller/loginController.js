@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const { ensureAuthenticated } = require('../Authentication/login');
+const { ensureAuthenticated } = require('../authentication/login');
 
 //dette er siden når man er kommet ind
 router.get('/', (req, res) => res.render('Velkommen til'));

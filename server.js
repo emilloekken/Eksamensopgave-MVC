@@ -4,15 +4,16 @@ const mongoose = require('mongoose')
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
+const bodyparser = require('body-parser')
 
 const app = express();
 
 //Passport konfiguration
-require('./Authentication/compare')(passport);
+require('./authentication/compare')(passport);
 
 
 //DB konfiguration
-const db = require('./Authentication/db').MongoURI;
+const db = require('./authentication/db').MongoURI;
 
 //connecter til Mongo
 mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -25,6 +26,8 @@ app.set('view engine', 'ejs');
 
 // Bodyparser
 app.use(express.urlencoded({ extended: false }));
+
+app.use(bodyparser.json())
 
 // express session middleware
 app.use(session({
@@ -49,11 +52,11 @@ app.use((req, res, next) => {
 });
 
 //Routes 
-app.use('/', require('./Controller/loginController'));
-app.use('/users', require('./Controller/userController'));
+app.use('/', require('./controller/loginController'));
+app.use('/users', require('./controller/userController'));
 
 //Routes til Matches, swipe og profil
-app.use('/home', require('./Controller/home'));
+app.use('/home', require('./controller/home'));
 
 //opsætter server på port 5050
 

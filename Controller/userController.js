@@ -1,20 +1,25 @@
 const express = require('express');
-
 const router = express.Router();
-
 // bruger bcrypt til at inkrypterer password
 const bcrypt = require('bcryptjs');
-
 const passport = require('passport');
+const User = require('../model/User');
+
+var session = require('express-session');
+const { deleteUserByEmail } = require('../services/userService');
+const { update } = require('../model/User');
+
 
 // Henter user model
-const User = require('../Model/User');
-
 //Login page
 router.get('/login', (req, res) => res.render('Login'));
 
+router.use(session({secret: "Shh, det en hemmelighed!"}));
+
 //Registerpage
 router.get('/register', (req, res) => res.render('Register'));
+
+router.get('/profile', (req, res) => res.render('Profile', {deleteUser: deleteUser, email: req.session.email}))
 
 // Register handler, får submit af register profil i terminalen
 router.post('/register', (req, res) => {
@@ -97,6 +102,8 @@ if (errors.length > 0) {
 
 //login handle, redirecter efter login
 router.post('/login', (req, res, next) => {
+    req.session.email = req.body.email
+
     passport.authenticate('local', {
         successRedirect: '/home',
         failureRedirect: '/users/login',
@@ -127,6 +134,34 @@ router.delete('/delete-user/:id', ((req, res, next) => {
 }));
 
 
+//endpoint til at opdatere bruger
+// opdaterer med .put (UPDATE, Crud operation)
+router.put("/update/:id", async (req, res) => {
+
+    //henter id'et på brugeren
+    const _id = req.params.id;
+    //henter den nuværende brugers body
+    const currentUser = req.body;
+    console.log(currentUser)
+
+    try {
+      var updatedUser = await User.findByIdAndUpdate(
+          //finder den enkelte bruger 
+        _id,
+        currentUser,
+        {
+          new: true,
+          useFindAndModify: false,
+        }
+      );
+      //opdaterer brugeren og sender tilbage
+      res.send(updatedUser);
+    } catch (error) {
+      console.log(error);
+      res.send(500);
+    }
+  });
+
 
 //endpoint til at slette en bruger
 /*
@@ -140,23 +175,6 @@ router.delete('/:id', async (req, res) => {
         return res.sendStatus(500)
     }
 })
-*/
-
-// Update User
-/*
-router.update('/update-user/:id', ((req, res, next) => {
-    User.findByIdAndUpdate(req.params.id, {
-        $set: req.body
-    }, (error, data) => {
-        if (error) {
-            return next(error);
-            console.log(error)
-        } else {
-            res.json(data)
-            console.log('User successfully updated!')
-        }
-    })
-}))
 */
 
 

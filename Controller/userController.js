@@ -10,7 +10,7 @@ const { deleteUserByEmail } = require('../services/userService');
 const { update } = require('../model/User');
 
 
-// Henter user model
+
 //Login page
 router.get('/login', (req, res) => res.render('Login'));
 
@@ -79,12 +79,12 @@ if (errors.length > 0) {
                 preferredGender,
                 password
             });
-//vi får vores password i tekst som vi kan se, vi laver derfor hash password som er krypteret
+//vi får vores password i tekst som er læseligt, vi laver derfor hash password som er krypteret
         bcrypt.genSalt(10, (err, salt) => bcrypt.hash(newUser.password, salt, (err, hash) => {
             if(err) throw err;
 //sætter password fra plain tekst til hash 
             newUser.password = hash;
-//save vores nye user info
+//gemmer vores nye user information
             newUser.save()
             .then(user => {
                 req.flash('success_msg', 'du er nu registreret og kan tilgå hjemmesiden');
@@ -100,7 +100,7 @@ if (errors.length > 0) {
 
 });
 
-//login handle, redirecter efter login
+//login, redirecter efter login
 router.post('/login', (req, res, next) => {
     req.session.email = req.body.email
 
@@ -111,7 +111,7 @@ router.post('/login', (req, res, next) => {
       })(req, res, next);
     });
 
-// Logout handle, redirecter dig tilbage til forsiden når du logger ud
+// Logout, redirecter dig tilbage til forsiden når du logger ud
 router.get('/logout', (req, res) => {
     req.logout();
     req.flash('success_msg', 'Du er nu logget ud');
@@ -141,7 +141,6 @@ router.put("/update/:id", async (req, res) => {
     const _id = req.params.id;
     //henter den nuværende brugers body
     const currentUser = req.body;
-    console.log(currentUser)
 
     try {
       var updatedUser = await User.findByIdAndUpdate(

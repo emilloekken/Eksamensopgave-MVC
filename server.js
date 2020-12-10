@@ -36,14 +36,14 @@ app.use(session({
     saveUninitialized: true
 }));
 
-// Passport middleware
+// Passport middleware som bruges til holde os som brugere logget ind på siden, indtil vi logger ud igen
 app.use(passport.initialize());
 app.use(passport.session());
 
 //connect flash 
 app.use(flash());
 
-//global variabels for coloring 
+//indsætter flash messages, pop up beskeder som viser sig, hvis arbejder på req,res. Den svarer på parametrene success eller error. 
 app.use((req, res, next) => {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
@@ -51,7 +51,7 @@ app.use((req, res, next) => {
     next();
 });
 
-//Routes 
+//routes til loginController og userController
 app.use('/', require('./controller/loginController'));
 app.use('/users', require('./controller/userController'));
 
